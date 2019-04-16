@@ -3,9 +3,9 @@
   Url                 = "https://releases.hashicorp.com/vault/$($version)/vault_$($version)_windows_386.zip"
   UnzipLocation       = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
   Url64               = "https://releases.hashicorp.com/vault/$($version)/vault_$($version)_windows_amd64.zip"
-  Checksum            = '895252424cbdc23ed524f63741fd472a7a04fe508a58dead76d9f6422b465729'
+  Checksum            = 'b9b811d79bada1368b7cfb04eb5fffc3b12f97bf9b462a1c081e78b81be3b6f7'
   ChecksumType        = 'sha256'
-  Checksum64          = 'b26de17832cb3a49d49017f5a3509e53d83547c275c85f81e045e58670b4061c'
+  Checksum64          = '2d52fa7923244a9199ed16b475633ee51d1940cadfe3f914b7d9622de4a186b5'
   version             = '1.1.0'  
 }
 
