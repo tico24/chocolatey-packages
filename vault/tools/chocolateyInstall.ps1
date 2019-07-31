@@ -3,10 +3,10 @@
   Url                 = "https://releases.hashicorp.com/vault/$($version)/vault_$($version)_windows_386.zip"
   UnzipLocation       = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
   Url64               = "https://releases.hashicorp.com/vault/$($version)/vault_$($version)_windows_amd64.zip"
-  Checksum            = 'b9b811d79bada1368b7cfb04eb5fffc3b12f97bf9b462a1c081e78b81be3b6f7'
+  Checksum            = 'bc15df0f1b5bf704e02b97e0bcc276c2ae5e0ae0a03ca232dc7007ff45755328'
   ChecksumType        = 'sha256'
-  Checksum64          = '2d52fa7923244a9199ed16b475633ee51d1940cadfe3f914b7d9622de4a186b5'
-  version             = '1.1.0'  
+  Checksum64          = 'a57d005cf3c494e7dc78f841d802f1b8cd39f23bb08743f5e488d0344998395e'
+  version             = '1.2.0'  
 }
 
 Install-ChocolateyZipPackage @packageArgs
