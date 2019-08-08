@@ -5,7 +5,7 @@
     <!-- Read this before publishing packages to chocolatey.org: https://github.com/chocolatey/chocolatey/wiki/CreatePackages -->
     <id>vault</id>
     <title>Vault</title>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
     <authors>Mitchell Hashimoto, HashiCorp</authors>
     <owners>James Toyer, Tim Collins</owners>
     <summary>Vault is a tool for securely accessing secrets</summary>
@@ -24,20 +24,18 @@
 
       For more information, see the [introduction section](https://www.vaultproject.io/intro) of the Vault website.
     </description>
-          <releaseNotes>
-      ## 1.2.0 (July 30th, 2019)
-        * Integrated Storage: Vault 1.2 includes a tech preview of a new way to manage storage directly within a Vault cluster. This new integrated storage solution is based on the Raft protocol which is also used to back HashiCorp Consul and HashiCorp Nomad.
-        * Vault API explorer: The Vault UI now includes an embedded API explorer where you can browse the endpoints available to you and make requests. To try it out, open the Web CLI and type api.
-        * Combined DB credential rotation: Alternative mode for the Combined DB Secret Engine to automatically rotate existing database account credentials and set Vault as the source of truth for credentials.
-        * Identity Tokens: Vault's Identity system can now generate OIDC-compliant ID tokens. These customizable tokens allow encapsulating a signed, verifiable snapshot of identity information and metadata. They can be used by other applications—even those without Vault authorization—as a way of establishing identity based on a Vault Entity.
-        * Pivotal Cloud Foundry plugin: New auth method using Pivotal Cloud Foundry certificates for Vault authentication.
-        * ElasticSearch database plugin: New ElasticSearch database plugin issues unique, short-lived ElasticSearch credentials.
-        * New UI Features: An HTTP Request Volume Page and new UI for editing LDAP Users and Groups have been added.
-        * HA support for Postgres: PostgreSQL versions >= 9.5 may now be used as an HA storage backend.
-        * KMIP secrets engine (Enterprise): Allows Vault to operate as a KMIP Server, seamlessly brokering cryptographic operations for traditional infrastructure.
+    <releaseNotes>
+      IMPROVEMENTS:
+
+       * ui: The UI will now redirect to a page after authentication [GH-7088]
+
+      BUG FIXES:
+
+       * ui: The web CLI will now parse input as a shell string, with special characters escaped [GH-7206]
+       * ui (enterprise): The list of namespaces is now cleared when logging out [GH-7186]
 
       ## Previous Releases
-      For more information on previous releases, check out the changelog on [GitHub](https://github.com/hashicorp/vault/blob/v1.2.0/CHANGELOG.md).
+      For more information on previous releases, check out the changelog on [GitHub](https://github.com/hashicorp/vault/blob/v1.2.1/CHANGELOG.md).
     </releaseNotes>
     <projectUrl>https://www.vaultproject.io/</projectUrl>
     <docsUrl>https://www.vaultproject.io/docs/index.html</docsUrl>
