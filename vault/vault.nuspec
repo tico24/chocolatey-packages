@@ -5,7 +5,7 @@
     <!-- Read this before publishing packages to chocolatey.org: https://github.com/chocolatey/chocolatey/wiki/CreatePackages -->
     <id>vault</id>
     <title>Vault</title>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
     <authors>Mitchell Hashimoto, HashiCorp</authors>
     <owners>James Toyer, Tim Collins</owners>
     <summary>Vault is a tool for securely accessing secrets</summary>
@@ -25,17 +25,31 @@
       For more information, see the [introduction section](https://www.vaultproject.io/intro) of the Vault website.
     </description>
     <releaseNotes>
-      IMPROVEMENTS:
+      ## 1.2.2 (August 15, 2019)
 
-       * ui: The UI will now redirect to a page after authentication [GH-7088]
+      CHANGES:
 
+       * auth/pcf: The signature format has been updated to use the standard Base64
+         encoding instead of the URL-safe variant. Signatures created using the
+         previous format will continue to be accepted [PCF-27]
+       * core: The http response code returned when an identity token key is not found
+         has been changed from 400 to 404
+         
+      IMPROVEMENTS: 
+
+       * identity: Remove 512 entity limit for groups [GH-7317]
+         
       BUG FIXES:
 
-       * ui: The web CLI will now parse input as a shell string, with special characters escaped [GH-7206]
-       * ui (enterprise): The list of namespaces is now cleared when logging out [GH-7186]
+       * auth/approle: Fix an error where an empty `token_type` string was not being
+         correctly handled as `TokenTypeDefault` [GH-7273]
+       * auth/radius: Fix panic when logging in [GH-7286]
+       * ui: the string-list widget will now honor multiline input [GH-7254]
+       * ui: various visual bugs in the KV interface were addressed [GH-7307]
+       * ui: fixed incorrect URL to access help in LDAP auth [GH-7299]
 
       ## Previous Releases
-      For more information on previous releases, check out the changelog on [GitHub](https://github.com/hashicorp/vault/blob/v1.2.1/CHANGELOG.md).
+      For more information on previous releases, check out the changelog on [GitHub](https://github.com/hashicorp/vault/blob/v1.2.2/CHANGELOG.md).
     </releaseNotes>
     <projectUrl>https://www.vaultproject.io/</projectUrl>
     <docsUrl>https://www.vaultproject.io/docs/index.html</docsUrl>
