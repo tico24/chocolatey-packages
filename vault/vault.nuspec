@@ -5,7 +5,7 @@
     <!-- Read this before publishing packages to chocolatey.org: https://github.com/chocolatey/chocolatey/wiki/CreatePackages -->
     <id>vault</id>
     <title>Vault</title>
-    <version>1.2.3</version>
+    <version>1.2.4</version>
     <authors>Mitchell Hashimoto, HashiCorp</authors>
     <owners>James Toyer, Tim Collins</owners>
     <summary>Vault is a tool for securely accessing secrets</summary>
@@ -25,43 +25,50 @@
       For more information, see the [introduction section](https://www.vaultproject.io/intro) of the Vault website.
     </description>
     <releaseNotes>
-      ## 1.2.3 (September 12, 2019)
+      ## 1.2.4 (November 7th, 2019)
 
-      FEATURES:
+      SECURITY:
 
-      * **Oracle Cloud (OCI) Integration**: Vault now support using Oracle Cloud for
-        storage, auto unseal, and authentication.  
+       * In a non-root namespace, revocation of a token scoped to a non-root namespace did not trigger the expected revocation of dynamic secret leases associated with that token. As a result, dynamic secret leases in non-root namespaces may outlive the token that created them.  This vulnerability, CVE-2019-18616, affects Vault Enterprise 0.11.0 and newer.
+       * Disaster Recovery secondary clusters did not delete already-replicated data after a mount filter has been created on an upstream Performance secondary cluster. As a result, encrypted secrets may remain replicated on a Disaster Recovery secondary cluster after application of a mount filter excluding those secrets from replication. This vulnerability, CVE-2019-18617, affects Vault Enterprise 0.8 and newer.
+       * Update version of Go to 1.12.12 to fix Go bug golang.org/issue/34960 which corresponds to CVE-2019-17596.
+
+      CHANGES: 
+
+       * auth/aws: If a custom `sts_endpoint` is configured, Vault Agent and the CLI
+         should provide the corresponding region via the `region` parameter (which
+         already existed as a CLI parameter, and has now been added to Agent). The
+         automatic region detection added to the CLI and Agent in 1.2 has been removed.
 
       IMPROVEMENTS:
 
-       * auth/jwt: Groups claim matching now treats a string response as a single
-         element list [JWT-63]
-       * auth/kubernetes: enable better support for projected tokens API by allowing
-         user to specify issuer [GH-65]
-       * auth/pcf: The PCF auth plugin was renamed to the CF auth plugin, maintaining
-         full backwards compatibility [GH-7346]
-       * replication: Premium packages now come with unlimited performance standby
-         nodes
+        * cli: Ignore existing token during CLI login [GH-7508]
+        * core: Log proxy settings from environment on startup [GH-7528]
+        * core: Cache whether we've been initialized to reduce load on storage [GH-7549]
 
       BUG FIXES:
 
-       * agent: Allow batch tokens and other non-renewable tokens to be used for
-         agent operations [GH-7441]
-       * auth/jwt: Fix an error where newer (v1.2) token_* configuration parameters
-         were not being applied to tokens generated using the OIDC login flow
-         [JWT-67]
-       * seal/transit: Allow using Vault Agent for transit seal operations [GH-7441]
-       * storage/couchdb: Fix a file descriptor leak [GH-7345]
-       * ui: Fix a bug where the status menu would disappear when trying to revoke a
-         token [GH-7337]
-       * ui: Fix a regression that prevented input of custom items in search-select
-         [GH-7338]
-       * ui: Fix an issue with the namespace picker being unable to render nested
-         namespaces named with numbers and sorting of namespaces in the picker
-         [GH-7333]
+       * agent: Fix handling of gzipped responses [GH-7470]
+       * cli: Fix panic when pgp keys list is empty [GH-7546]
+       * core: add hook for initializing seals for migration [GH-7666]
+       * core (enterprise): Migrating from one auto unseal method to another never
+         worked on enterprise, now it does.
+       * identity: Add required field `response_types_supported` to identity token
+         `.well-known/openid-configuration` response [GH-7533]
+       * identity: Fixed nil pointer panic when merging entities [GH-7712]
+       * replication (Enterprise): Fix issue causing performance standbys nodes 
+         disconnecting when under high loads.
+       * secrets/azure: Fix panic that could occur if client retries timeout [GH-7793]
+       * secrets/database: Fix bug in combined DB secrets engine that can result in
+         writes to static-roles endpoints timing out [GH-7518]
+       * secrets/pki: Improve tidy to continue when value is nil [GH-7589]
+       * ui (Enterprise): Allow kv v2 secrets that are gated by Control Groups to be 
+         viewed in the UI [GH-7504]
+       * cli: Command timeouts are now always specified solely by the
+         `VAULT_CLIENT_TIMEOUT` value. [GH-7469]
 
       ## Previous Releases
-      For more information on previous releases, check out the changelog on [GitHub](https://github.com/hashicorp/vault/blob/v1.2.3/CHANGELOG.md).
+      For more information on previous releases, check out the changelog on [GitHub](https://github.com/hashicorp/vault/blob/v1.2.4/CHANGELOG.md).
     </releaseNotes>
     <projectUrl>https://www.vaultproject.io/</projectUrl>
     <docsUrl>https://www.vaultproject.io/docs/index.html</docsUrl>
