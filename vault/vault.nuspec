@@ -5,7 +5,7 @@
     <!-- Read this before publishing packages to chocolatey.org: https://github.com/chocolatey/chocolatey/wiki/CreatePackages -->
     <id>vault</id>
     <title>Vault</title>
-    <version>1.2.4</version>
+    <version>1.3.0</version>
     <authors>Mitchell Hashimoto, HashiCorp</authors>
     <owners>James Toyer, Tim Collins</owners>
     <summary>Vault is a tool for securely accessing secrets</summary>
@@ -25,50 +25,155 @@
       For more information, see the [introduction section](https://www.vaultproject.io/intro) of the Vault website.
     </description>
     <releaseNotes>
-      ## 1.2.4 (November 7th, 2019)
+      ## 1.3 (November 14th, 2019)
 
-      SECURITY:
+      CHANGES:
 
-       * In a non-root namespace, revocation of a token scoped to a non-root namespace did not trigger the expected revocation of dynamic secret leases associated with that token. As a result, dynamic secret leases in non-root namespaces may outlive the token that created them.  This vulnerability, CVE-2019-18616, affects Vault Enterprise 0.11.0 and newer.
-       * Disaster Recovery secondary clusters did not delete already-replicated data after a mount filter has been created on an upstream Performance secondary cluster. As a result, encrypted secrets may remain replicated on a Disaster Recovery secondary cluster after application of a mount filter excluding those secrets from replication. This vulnerability, CVE-2019-18617, affects Vault Enterprise 0.8 and newer.
-       * Update version of Go to 1.12.12 to fix Go bug golang.org/issue/34960 which corresponds to CVE-2019-17596.
+       * Secondary cluster activation: There has been a change to the way that activating
+         performance and DR secondary clusters works when using public keys for
+         encryption of the parameters rather than a wrapping token. This flow was
+         experimental and never documented. It is now officially supported and
+         documented but is not backwards compatible with older Vault releases.
+       * Cluster cipher suites: On its cluster port, Vault will no longer advertise
+         the full TLS 1.2 cipher suite list by default. Although this port is only
+         used for Vault-to-Vault communication and would always pick a strong cipher,
+         it could cause false flags on port scanners and other security utilities
+         that assumed insecure ciphers were being used. The previous behavior can be
+         achieved by setting the value of the (undocumented) `cluster_cipher_suites`
+         config flag to `tls12`.
 
-      CHANGES: 
+      FEATURES:
 
-       * auth/aws: If a custom `sts_endpoint` is configured, Vault Agent and the CLI
-         should provide the corresponding region via the `region` parameter (which
-         already existed as a CLI parameter, and has now been added to Agent). The
-         automatic region detection added to the CLI and Agent in 1.2 has been removed.
+       * **Vault Debug**: A new top-level subcommand, `debug`, is added that allows 
+         operators to retrieve debugging information related to a particular Vault
+         node. Operators can use this simple workflow to capture triaging information,
+         which can then be consumed programmatically or by support and engineering teams.
+         It has the abilitity to probe for config, host, metrics, pprof, server status, 
+         and replication status.
+       * **Recovery Mode**: Vault server can be brought up in recovery mode to resolve
+         outages caused due to data store being in bad state. This is a privileged mode
+         that allows `sys/raw` API calls to perform surgical corrections to the data
+         store. Bad storage state can be caused by bugs. However, this is usually
+         observed when known (and fixed) bugs are hit by older versions of Vault.
+       * **Entropy Augmentation (Enterprise)**: Vault now supports sourcing entropy from 
+         external source for critical security parameters. Currently an HSM that
+         supports PKCS#11 is the only supported source.
+       * **Active Directory Secret Check-In/Check-Out**: In the Active Directory secrets
+         engine, users or applications can check out a service account for use, and its
+         password will be rotated when it's checked back in.
+       * **Vault Agent Template**: Vault Agent now supports rendering templates containing 
+         Vault secrets to disk, similar to Consul Template [GH-7652]
+       * **Transit Key Type Support**: Signing and verification is now supported with the P-384
+         (secp384r1) and P-521 (secp521r1) ECDSA curves [GH-7551] and encryption and 
+         decryption is now supported via AES128-GCM96 [GH-7555]
+       * **SSRF Protection for Vault Agent**: Vault Agent has a configuration option to 
+         require a specific header before allowing requests [GH-7627]
+       * **AWS Auth Method Root Rotation**: The credential used by the AWS auth method can 
+         now be rotated, to ensure that only Vault knows the credentials it is using [GH-7131]
+       * **New UI Features**: The UI now supports managing users and groups for the 
+         Userpass, Cert, Okta, and Radius auth methods.
+       * **Shamir with Stored Master Key**: The on disk format for Shamir seals has changed,
+         allowing for a secondary cluster using Shamir downstream from a primary cluster
+         using Auto Unseal. [GH-7694]
+       * **Stackdriver Metrics Sink**: Vault can now send metrics to
+         [Stackdriver](https://cloud.google.com/stackdriver/). See the [configuration
+         documentation](https://www.vaultproject.io/docs/config/index.html) for
+         details. [GH-6957]
+       * **Filtered Paths Replication (Enterprise)**: Based on the predecessor Filtered Mount Replication, 
+         Filtered Paths Replication allows now filtering of namespaces in addition to mounts.
+       * **Token Renewal via Accessor**: Tokens can now be renewed via the accessor value through
+         the new `auth/token/renew-accessor` endpoint if the caller's token has
+         permission to access that endpoint.
+       * **Improved Integrated Storage (Beta)**: Improved raft write performance, added support for 
+         non-voter nodes, along with UI support for: using raft storage, joining a raft cluster, 
+         and downloading and restoring a snapshot.
 
       IMPROVEMENTS:
 
-        * cli: Ignore existing token during CLI login [GH-7508]
-        * core: Log proxy settings from environment on startup [GH-7528]
-        * core: Cache whether we've been initialized to reduce load on storage [GH-7549]
+       * agent: Add ability to set the TLS SNI name used by Agent [GH-7519]
+       * auth/jwt: The redirect callback host may now be specified for CLI logins
+         [JWT-71]
+       * auth/jwt: Bound claims may now contain boolean values [JWT-73]
+       * auth/jwt: CLI logins can now open the browser when running in WSL [JWT-77]
+       * core: Exit ScanView if context has been cancelled [GH-7419]
+       * core: re-encrypt barrier and recovery keys if the unseal key is updated
+         [GH-7493]
+       * core: Don't advertise the full set of TLS 1.2 cipher suites on the cluster
+         port, even though only strong ciphers were used [GH-7487]
+       * core (enterprise): Add background seal re-wrap
+       * core/metrics: Add config parameter to allow unauthenticated sys/metrics 
+         access. [GH-7550] 
+       * metrics: Upgrade DataDog library to improve performance [GH-7794]
+       * replication (enterprise): Write-Ahead-Log entries will not duplicate the
+         data belonging to the encompassing physical entries of the transaction,
+         thereby improving the performance and storage capacity.
+       * replication (enterprise): Added more replication metrics
+       * replication (enterprise): Reindex process now compares subpages for a more
+         accurate indexing process.
+       * replication (enterprise): Reindex API now accepts a new `skip_flush` parameter
+         indicating all the changes should not be flushed while the tree is locked.
+       * secrets/aws: The root config can now be read [GH-7245]
+       * secrets/aws: Role paths may now contain the '@' character [GH-7553]
+       * secrets/database/cassandra: Add ability to skip verfication of connection [GH-7614]
+       * secrets/gcp: Fix panic during rollback if the roleset has been deleted [GCP-52]
+       * storage/azure: Add config parameter to Azure storage backend to allow
+         specifying the ARM endpoint [GH-7567]
+       * storage/cassandra: Improve storage efficiency by eliminating unnecessary
+         copies of value data [GH-7199]
+       * storage/raft: Improve raft write performance by utilizing FSM Batching [GH-7527]
+       * storage/raft: Add support for non-voter nodes [GH-7634]
+       * sys: Add a new `sys/host-info` endpoint for querying information about 
+         the host [GH-7330]
+       * sys: Add a new set of endpoints under `sys/pprof/` that allows profiling
+         information to be extracted [GH-7473]
+       * sys: Add endpoint that counts the total number of active identity entities [GH-7541]
+       * sys: `sys/seal-status` now has a `storage_type` field denoting what type of storage
+         the cluster is configured to use
+       * sys: Add a new `sys/internal/counters/tokens` endpoint, that counts the
+         total number of active service token accessors in the shared token storage.
+         [GH-7541]
+       * sys/config: Add  a new endpoint under `sys/config/state/sanitized` that
+         returns the configuration state of the server. It excludes config values
+         from `storage`, `ha_storage`, and `seal` stanzas and some values
+         from `telemetry` due to potential sensitive entries in those fields.
+       * ui: when using raft storage, you can now join a raft cluster, download a
+         snapshot, and restore a snapshot from the UI [GH-7410]
+       * ui: clarify when secret version is deleted in the secret version history dropdown [GH-7714]
 
       BUG FIXES:
 
-       * agent: Fix handling of gzipped responses [GH-7470]
-       * cli: Fix panic when pgp keys list is empty [GH-7546]
-       * core: add hook for initializing seals for migration [GH-7666]
-       * core (enterprise): Migrating from one auto unseal method to another never
-         worked on enterprise, now it does.
-       * identity: Add required field `response_types_supported` to identity token
-         `.well-known/openid-configuration` response [GH-7533]
-       * identity: Fixed nil pointer panic when merging entities [GH-7712]
-       * replication (Enterprise): Fix issue causing performance standbys nodes 
-         disconnecting when under high loads.
-       * secrets/azure: Fix panic that could occur if client retries timeout [GH-7793]
-       * secrets/database: Fix bug in combined DB secrets engine that can result in
-         writes to static-roles endpoints timing out [GH-7518]
-       * secrets/pki: Improve tidy to continue when value is nil [GH-7589]
-       * ui (Enterprise): Allow kv v2 secrets that are gated by Control Groups to be 
-         viewed in the UI [GH-7504]
+       * agent: Fix a data race on the token value for inmemsink [GH-7707]
+       * api: Fix Go API using lease revocation via URL instead of body [GH-7777]
+       * api: Allow setting a function to control retry behavior [GH-7331]
+       * auth/gcp: Fix a bug where region information in instance groups names could
+         cause an authorization attempt to fail [GCP-74]
+       * cli: Fix a bug where a token of an unknown format (e.g. in ~/.vault-token)
+         could cause confusing error messages during `vault login` [GH-7508]
+       * cli: Fix a bug where the `namespace list` command with JSON formatting 
+         always returned an empty object [GH-7705]
        * cli: Command timeouts are now always specified solely by the
          `VAULT_CLIENT_TIMEOUT` value. [GH-7469]
+       * core: Don't allow registering a non-root zero TTL token lease. This is purely
+         defense in depth as the lease would be revoked immediately anyways, but
+         there's no real reason to allow registration. [GH-7524]
+       * core: Correctly revoke the token that's present in the response auth from a
+         auth/token/ request if there's partial failure during the process. [GH-7835]
+       * identity (enterprise): Fixed identity case sensitive loading in secondary
+         cluster [GH-7327]
+       * identity: Ensure only replication primary stores the identity case sensitivity state [GH-7820]
+       * raft: Fixed VAULT_CLUSTER_ADDR env being ignored at startup [GH-7619]
+       * secrets/pki: Don't allow duplicate SAN names in issued certs [GH-7605]
+       * sys/health: Pay attention to the values provided for `standbyok` and
+         `perfstandbyok` rather than simply using their presence as a key to flip on
+         that behavior [GH-7323]
+       * ui: using the `wrapped_token` query param will work with `redirect_to` and
+         will automatically log in as intended [GH-7398]
+       * ui: fix an error when initializing from the UI using PGP keys [GH-7542]
+       * ui: show all active kv v2 secret versions even when `delete_version_after` is configured [GH-7685]
+       * ui: Ensure that items in the top navigation link to pages that users have access to [GH-7590]
 
       ## Previous Releases
-      For more information on previous releases, check out the changelog on [GitHub](https://github.com/hashicorp/vault/blob/v1.2.4/CHANGELOG.md).
+      For more information on previous releases, check out the changelog on [GitHub](https://github.com/hashicorp/vault/blob/v1.3.0/CHANGELOG.md).
     </releaseNotes>
     <projectUrl>https://www.vaultproject.io/</projectUrl>
     <docsUrl>https://www.vaultproject.io/docs/index.html</docsUrl>
