@@ -5,7 +5,7 @@
     <!-- Read this before publishing packages to chocolatey.org: https://github.com/chocolatey/chocolatey/wiki/CreatePackages -->
     <id>vault</id>
     <title>Vault</title>
-    <version>1.4.0</version>
+    <version>1.4.1</version>
     <authors>Mitchell Hashimoto, HashiCorp</authors>
     <owners>James Toyer, Tim Collins</owners>
     <summary>Vault is a tool for securely accessing secrets</summary>
@@ -25,98 +25,52 @@
       For more information, see the [introduction section](https://www.vaultproject.io/intro) of the Vault website.
     </description>
     <releaseNotes>
-      ## 1.4.0 (April 7th, 2020)
+      ## 1.4.1 (April 30th, 2020)
 
-      CHANGES:
+      CHANGES: 
 
-      * cli: The raft configuration command has been renamed to list-peers to avoid confusion.
-
-      FEATURES:
-
-      * **Kerberos Authentication**: Vault now supports Kerberos authentication using a SPNEGO token. Login can be performed using the Vault CLI, API, or agent.
-      * **Kubernetes Service Discovery**: A new Kubernetes service discovery feature where, if configured, Vault will tag Vault pods with their current health status.
-      * **MongoDB Atlas Secrets**: Vault can now generate dynamic credentials for both MongoDB Atlas databases as well as the Atlas programmatic interface.
-      * **OpenLDAP Secrets Engine**: We now support password management of existing OpenLDAP user entries.
-      * **Redshift Database Secrets Engine**: The database secrets engine now supports static and dynamic secrets for the Amazon Web Services (AWS) Redshift service.
-      * **Service Registration Config**: A newly introduced service_registration configuration stanza, that allows for service registration to be configured separately from the storage backend.
-      * **Transform Secrets Engine (Enterprise)**: A new secrets engine that handles secure data transformation and tokenization against provided input value.
-      * **Integrated Storage**: Promoted out of beta and into general availability for both open-source and enterprise workloads.
+      * auth/aws: The default set of metadata fields added in 1.4.1 has been changed to `account_id` and `auth_type` [[GH-8783](https://github.com/hashicorp/vault/pull/8783)]
+      * storage/raft: Disallow `ha_storage` to be specified if `raft` is set as the `storage` type. [[GH-8707](https://github.com/hashicorp/vault/pull/8707)]
 
       IMPROVEMENTS:
 
-      * agent: add option to force the use of the auth-auth token, and ignore the Vault token in the request GH-8101.
-      * api: Restore and fix DNS SRV Lookup GH-8520
-      * audit: HMAC http_raw_body in audit log; this ensures that large authenticated Prometheus metrics responses get replaced with short HMAC values GH-8130
-      * audit: Generate-root, generate-recovery-token, and generate-dr-operation-token requests and responses are now audited. GH-8301
-      * auth/aws: Reduce the number of simultaneous STS client credentials needed  GH-8161
-      * auth/azure: subscription ID, resource group, vm and vmss names are now stored in alias metadata GH-30
-      * auth/jwt: Additional OIDC callback parameters available for CLI logins GH-80 GH-86
-      * auth/jwt: Bound claims may be optionally configured using globs GH-89
-      * auth/jwt: Timeout during OIDC CLI login if process doesn't complete within 2 minutes GH-97
-      * auth/jwt: Add support for the `form_post` response mode GH-98
-      * auth/jwt: add optional client_nonce to authorization flow GH-104
-      * auth/okta: Upgrade okta sdk lib, which should improve handling of groups GH-8143
-      * aws: Add support for v2 of the instance metadata service (see issue 7924 for all linked PRs)
-      * core: Separate out service discovery interface from storage interface to allow new types of service discovery not coupled to storage GH-7887
-      * core: Add support for telemetry option metrics_prefix GH-8340
-      * core: Entropy Augmentation can now be used with AWS KMS and Vault Transit seals
-      * core: Allow tls_min_version to be set to TLS 1.3 GH-8305
-      * cli: Incorrect TLS configuration will now correctly fail GH-8025
-      * identity: Allow specifying a custom client_id for identity tokens GH-8165
-      * metrics/prometheus: improve performance with high volume of metrics updates GH-8507
-      * replication (enterprise): Fix race condition causing clusters with high throughput writes to sometimes fail to enter streaming-wal mode
-      * replication (enterprise): Secondary clusters can now perform an extra gRPC call to all nodes in a primary cluster in an attempt to resolve the active node's address
-      * replication (enterprise): The replication status API now outputs last_performance_wal, last_dr_wal, and connection_state values
-      * replication (enterprise): DR secondary clusters can now be recovered by the replication/dr/secondary/recover API
-      * replication (enterprise): We now allow for an alternate means to create a Disaster Recovery token, by using a batch token that is created with an ACL that allows for access to one or more of the DR endpoints.
-      * secrets/database/mongodb: Switched internal MongoDB driver to mongo-driver GH-8140
-      * secrets/database/mongodb: Add support for x509 client authorization to MongoDB GH-8329
-      * secrets/database/oracle: Add support for static credential rotation GH-26
-      * secrets/consul: Add support to specify TLS options per Consul backend GH-4800
-      * secrets/gcp: Allow specifying the TTL for a service key GH-54
-      * secrets/gcp: Add support for rotating root keys GH-53
-      * secrets/gcp: Handle version 3 policies for Resource Manager IAM requests GH-77
-      * secrets/nomad: Add support to specify TLS options per Nomad backend GH-8083
-      * secrets/ssh: Allowed users can now be templated with identity information GH-7548
-      * secrets/transit: Adding RSA3072 key support GH-8151
-      * storage/consul: Vault returns now a more descriptive error message when only a client cert or a client key has been provided GH-4930
-      * storage/raft: Nodes in the raft cluster can all be given possible leader addresses for them to continuously try and join one of them, thus automating
-        the process of join to a greater extent GH-7856
-      * storage/raft: Fix a potential deadlock that could occur on leadership transition GH-8547
-      * storage/raft: Refresh TLS keyring on snapshot restore GH-8546
-      * storage/etcd: Bumped etcd client API SDK GH-7931 GH-4961 GH-4349 GH-7582
-      * ui: Make Transit Key actions more prominent GH-8304
-      * ui: Add Core Usage Metrics GH-8347
-      * ui: Add refresh Namespace list on the Namespace dropdown, and redesign of Namespace dropdown menu GH-8442
-      * ui: Update transit actions to codeblocks and automatically encode plaintext unless indicated GH-8462
-      * ui: Display the results of transit key actions in a modal window GH-8462
-      * ui: Transit key version styling updates and ability to copy key from dropdown GH-8480
+      * auth/aws: The set of metadata stored during login is now configurable [[GH-8783](https://github.com/hashicorp/vault/pull/8783)]
+      * auth/aws: Improve region selection to avoid errors seen if the account hasn't enabled some newer AWS regions [[GH-8679](https://github.com/hashicorp/vault/pull/8679)]
+      * auth/azure: Enable login from Azure VMs with user-assigned identities [[GH-33](https://github.com/hashicorp/vault-plugin-auth-azure/pull/33)]
+      * auth/gcp: The set of metadata stored during login is now configurable [[GH-92](https://github.com/hashicorp/vault-plugin-auth-gcp/pull/92)]
+      * auth/gcp: The type of alias name used during login is now configurable [[GH-95](https://github.com/hashicorp/vault-plugin-auth-gcp/pull/95)]
+      * auth/ldap: Improve error messages during LDAP operation failures [[GH-8740](https://github.com/hashicorp/vault/pull/8740)]
+      * identity: Add a batch delete API for identity entities [[GH-8785]](https://github.com/hashicorp/vault/pull/8785)
+      * identity: Improve performance of logins when no group updates are needed [[GH-8795]](https://github.com/hashicorp/vault/pull/8795)
+      * metrics: Add `vault.identity.num_entities` metric [[GH-8816]](https://github.com/hashicorp/vault/pull/8816)
+      * secrets/kv: Allow `delete-version-after` to be reset to 0 via the CLI [[GH-8635](https://github.com/hashicorp/vault/pull/8635)]
+      * secrets/rabbitmq: Improve error handling and reporting [[GH-8619](https://github.com/hashicorp/vault/pull/8619)]
+      * ui: Provide One Time Password during Operation Token generation process [[GH-8630]](https://github.com/hashicorp/vault/pull/8630)
 
       BUG FIXES:
 
-      * agent: Fix issue where TLS options are ignored for agent template feature GH-7889
-      * auth/jwt: Use lower case role names for default_role to match the role case convention GH-100
-      * auth/ldap: Fix a bug where the UPNDOMAIN parameter was wrongly used to lookup the group membership of the given user GH-6325
-      * cli: Support autocompletion for nested mounts GH-8303
-      * cli: Fix CLI namespace autocompletion GH-8315
-      * identity: Fix incorrect caching of identity token JWKS responses GH-8412
-      * metrics/stackdriver: Fix issue that prevents the stackdriver metrics library to create unnecessary stackdriver descriptors GH-8073
-      * replication: Fix issue causing cubbyholes in namespaces on performance secondaries to not work.
-      * seal (enterprise): Fix seal migration when transactional seal wrap backend is in use.
-      * secrets/database/influxdb: Fix potential panic if connection to the InfluxDB database cannot be established GH-8282
-      * secrets/database/mysql: Ensures default static credential rotation statements are used GH-8240
-      * secrets/database/mysql: Fix inconsistent query parameter names: name or username for different queries. Now it allows for either for backwards compatibility GH-8240
-      * secrets/database/postgres: Fix inconsistent query parameter names: name or username for different queries. Now it allows for either for backwards compatibility GH-8240
-      * secrets/pki: Support FQDNs in DNS Name GH-8288
-      * storage/raft: Allow seal migration to be performed on Vault clusters using raft storage GH-8103
-      * telemetry: Prometheus requests on standby nodes will now return an error instead of forwarding the request to the active node GH-8280
-      * ui: Fix broken popup menu on the transit secrets list page GH-8348
-      * ui: Update headless Chrome flag to fix `yarn run test:oss` GH-8035
-      * ui: Update CLI to accept empty strings as param value to reset previously-set values
-      * ui: Fix bug where error states don't clear when moving between action tabs on Transit GH-8354
+      * auth/okta: Fix MFA regression (introduced in [GH-8143](https://github.com/hashicorp/vault/pull/8143)) from 1.4.0 [[GH-8807](https://github.com/hashicorp/vault/pull/8807)]
+      * auth/userpass: Fix upgrade value for `token_bound_cidrs` being ignored due to incorrect key provided [[GH-8826](https://github.com/hashicorp/vault/pull/8826/files)]
+      * config/seal: Fix segfault when seal block is removed [[GH-8517](https://github.com/hashicorp/vault/pull/8517)]
+      * core: Fix an issue where users attempting to build Vault could receive Go module checksum errors [[GH-8770](https://github.com/hashicorp/vault/pull/8770)]
+      * core: Fix blocked requests if a SIGHUP is issued during a long-running request has the state lock held. 
+        Also fixes deadlock that can happen if `vault debug` with the config target is ran during this time.
+        [[GH-8755](https://github.com/hashicorp/vault/pull/8755)]
+      * core: Always rewrite the .vault-token file as part of a `vault login` to ensure permissions and ownership are set correctly [[GH-8867](https://github.com/hashicorp/vault/pull/8867)]
+      * database/mongodb: Fix context deadline error that may result due to retry attempts on failed commands
+        [[GH-8863](https://github.com/hashicorp/vault/pull/8863)]
+      * http: Fix superflous call messages from the http package on logs caused by missing returns after
+        `respondError` calls [[GH-8796](https://github.com/hashicorp/vault/pull/8796)]
+      * namespace (enterprise): Fix namespace listing to return `key_info` when a scoping namespace is also provided. 
+      * seal/gcpkms: Fix panic that could occur if all seal parameters were provided via environment
+        variables [[GH-8840](https://github.com/hashicorp/vault/pull/8840)]
+      * storage/raft: Fix memory allocation and incorrect metadata tracking issues with snapshots [[GH-8793](https://github.com/hashicorp/vault/pull/8793)]
+      * storage/raft: Fix panic that could occur if `disable_clustering` was set to true on Raft storage cluster [[GH-8784](https://github.com/hashicorp/vault/pull/8784)]
+      * storage/raft: Handle errors returned from the API during snapshot operations [[GH-8861](https://github.com/hashicorp/vault/pull/8861)]
+      * sys/wrapping: Allow unwrapping of wrapping tokens which contain nil data [[GH-8714](https://github.com/hashicorp/vault/pull/8714)]
 
       ## Previous Releases
-      For more information on previous releases, check out the changelog on [GitHub](https://github.com/hashicorp/vault/blob/v1.4.0/CHANGELOG.md).
+      For more information on previous releases, check out the changelog on [GitHub](https://github.com/hashicorp/vault/blob/v1.4.1/CHANGELOG.md).
     </releaseNotes>
     <projectUrl>https://www.vaultproject.io/</projectUrl>
     <docsUrl>https://www.vaultproject.io/docs/index.html</docsUrl>
