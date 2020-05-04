@@ -10,67 +10,67 @@
     <owners>James Toyer, Tim Collins</owners>
     <summary>Vault is a tool for securely accessing secrets</summary>
     <description>
-Vault is a tool for securely accessing secrets. A secret is anything that you want to tightly control access to, such as API keys, passwords, certificates, and more. Vault provides a unified interface to any secret, while providing tight access control and recording a detailed audit log.
+      Vault is a tool for securely accessing secrets. A secret is anything that you want to tightly control access to, such as API keys, passwords, certificates, and more. Vault provides a unified interface to any secret, while providing tight access control and recording a detailed audit log.
 
-A modern system requires access to a multitude of secrets: database credentials, API keys for external services, credentials for service-oriented architecture communication, etc. Understanding who is accessing what secrets is already very difficult and platform-specific. Adding on key rolling, secure storage, and detailed audit logs is almost impossible without a custom solution. This is where Vault steps in.
+      A modern system requires access to a multitude of secrets: database credentials, API keys for external services, credentials for service-oriented architecture communication, etc. Understanding who is accessing what secrets is already very difficult and platform-specific. Adding on key rolling, secure storage, and detailed audit logs is almost impossible without a custom solution. This is where Vault steps in.
 
-The key features of Vault are:
+      The key features of Vault are:
 
-* **Secure Secret Storage**: Arbitrary key/value secrets can be stored in Vault. Vault encrypts these secrets prior to writing them to persistent storage, so gaining access to the raw storage isn't enough to access your secrets. Vault can write to disk, [Consul](https://www.consul.io), and more.
-* **Dynamic Secrets**: Vault can generate secrets on-demand for some systems, such as AWS or SQL databases. For example, when an application needs to access an S3 bucket, it asks Vault for credentials, and Vault will generate an AWS keypair with valid permissions on demand. After creating these dynamic secrets, Vault will also automatically revoke them after the lease is up.
-* **Data Encryption**: Vault can encrypt and decrypt data without storing it. This allows security teams to define encryption parameters and developers to store encrypted data in a location such as SQL without having to design their own encryption methods.
-* **Leasing and Renewal**: All secrets in Vault have a _lease_ associated with it. At the end of the lease, Vault will automatically revoke that secret. Clients are able to renew leases via built-in renew APIs.
-* **Revocation**: Vault has built-in support for secret revocation. Vault can revoke not only single secrets, but a tree of secrets, for example all secrets read by a specific user, or all secrets of a particular type. Revocation assists in key rolling as well as locking down systems in the case of an intrusion.
+      * **Secure Secret Storage**: Arbitrary key/value secrets can be stored in Vault. Vault encrypts these secrets prior to writing them to persistent storage, so gaining access to the raw storage isn't enough to access your secrets. Vault can write to disk, [Consul](https://www.consul.io), and more.
+      * **Dynamic Secrets**: Vault can generate secrets on-demand for some systems, such as AWS or SQL databases. For example, when an application needs to access an S3 bucket, it asks Vault for credentials, and Vault will generate an AWS keypair with valid permissions on demand. After creating these dynamic secrets, Vault will also automatically revoke them after the lease is up.
+      * **Data Encryption**: Vault can encrypt and decrypt data without storing it. This allows security teams to define encryption parameters and developers to store encrypted data in a location such as SQL without having to design their own encryption methods.
+      * **Leasing and Renewal**: All secrets in Vault have a _lease_ associated with it. At the end of the lease, Vault will automatically revoke that secret. Clients are able to renew leases via built-in renew APIs.
+      * **Revocation**: Vault has built-in support for secret revocation. Vault can revoke not only single secrets, but a tree of secrets, for example all secrets read by a specific user, or all secrets of a particular type. Revocation assists in key rolling as well as locking down systems in the case of an intrusion.
 
-For more information, see the [introduction section](https://www.vaultproject.io/intro) of the Vault website.
+      For more information, see the [introduction section](https://www.vaultproject.io/intro) of the Vault website.
     </description>
     <releaseNotes>
-## 1.4.1 (April 30th, 2020)
+      ## 1.4.1 (April 30th, 2020)
 
-CHANGES: 
+      CHANGES: 
 
-* auth/aws: The default set of metadata fields added in 1.4.1 has been changed to `account_id` and `auth_type` [[GH-8783](https://github.com/hashicorp/vault/pull/8783)]
-* storage/raft: Disallow `ha_storage` to be specified if `raft` is set as the `storage` type. [[GH-8707](https://github.com/hashicorp/vault/pull/8707)]
+      * auth/aws: The default set of metadata fields added in 1.4.1 has been changed to `account_id` and `auth_type` [GH-8783](https://github.com/hashicorp/vault/pull/8783)
+      * storage/raft: Disallow `ha_storage` to be specified if `raft` is set as the `storage` type. [GH-8707](https://github.com/hashicorp/vault/pull/8707)
 
-IMPROVEMENTS:
+      IMPROVEMENTS:
 
-* auth/aws: The set of metadata stored during login is now configurable [[GH-8783](https://github.com/hashicorp/vault/pull/8783)]
-* auth/aws: Improve region selection to avoid errors seen if the account hasn't enabled some newer AWS regions [[GH-8679](https://github.com/hashicorp/vault/pull/8679)]
-* auth/azure: Enable login from Azure VMs with user-assigned identities [[GH-33](https://github.com/hashicorp/vault-plugin-auth-azure/pull/33)]
-* auth/gcp: The set of metadata stored during login is now configurable [[GH-92](https://github.com/hashicorp/vault-plugin-auth-gcp/pull/92)]
-* auth/gcp: The type of alias name used during login is now configurable [[GH-95](https://github.com/hashicorp/vault-plugin-auth-gcp/pull/95)]
-* auth/ldap: Improve error messages during LDAP operation failures [[GH-8740](https://github.com/hashicorp/vault/pull/8740)]
-* identity: Add a batch delete API for identity entities [[GH-8785]](https://github.com/hashicorp/vault/pull/8785)
-* identity: Improve performance of logins when no group updates are needed [[GH-8795]](https://github.com/hashicorp/vault/pull/8795)
-* metrics: Add `vault.identity.num_entities` metric [[GH-8816]](https://github.com/hashicorp/vault/pull/8816)
-* secrets/kv: Allow `delete-version-after` to be reset to 0 via the CLI [[GH-8635](https://github.com/hashicorp/vault/pull/8635)]
-* secrets/rabbitmq: Improve error handling and reporting [[GH-8619](https://github.com/hashicorp/vault/pull/8619)]
-* ui: Provide One Time Password during Operation Token generation process [[GH-8630]](https://github.com/hashicorp/vault/pull/8630)
+      * auth/aws: The set of metadata stored during login is now configurable [GH-8783](https://github.com/hashicorp/vault/pull/8783)
+      * auth/aws: Improve region selection to avoid errors seen if the account hasn't enabled some newer AWS regions [GH-8679](https://github.com/hashicorp/vault/pull/8679)
+      * auth/azure: Enable login from Azure VMs with user-assigned identities [GH-33](https://github.com/hashicorp/vault-plugin-auth-azure/pull/33)
+      * auth/gcp: The set of metadata stored during login is now configurable [GH-92](https://github.com/hashicorp/vault-plugin-auth-gcp/pull/92)
+      * auth/gcp: The type of alias name used during login is now configurable [GH-95](https://github.com/hashicorp/vault-plugin-auth-gcp/pull/95)
+      * auth/ldap: Improve error messages during LDAP operation failures [GH-8740](https://github.com/hashicorp/vault/pull/8740)
+      * identity: Add a batch delete API for identity entities [GH-8785]](https://github.com/hashicorp/vault/pull/8785)
+      * identity: Improve performance of logins when no group updates are needed [GH-8795]](https://github.com/hashicorp/vault/pull/8795)
+      * metrics: Add `vault.identity.num_entities` metric [GH-8816]](https://github.com/hashicorp/vault/pull/8816)
+      * secrets/kv: Allow `delete-version-after` to be reset to 0 via the CLI [GH-8635](https://github.com/hashicorp/vault/pull/8635)
+      * secrets/rabbitmq: Improve error handling and reporting [GH-8619](https://github.com/hashicorp/vault/pull/8619)
+      * ui: Provide One Time Password during Operation Token generation process [GH-8630]](https://github.com/hashicorp/vault/pull/8630)
 
-BUG FIXES:
+      BUG FIXES:
 
-* auth/okta: Fix MFA regression (introduced in [GH-8143](https://github.com/hashicorp/vault/pull/8143)) from 1.4.0 [[GH-8807](https://github.com/hashicorp/vault/pull/8807)]
-* auth/userpass: Fix upgrade value for `token_bound_cidrs` being ignored due to incorrect key provided [[GH-8826](https://github.com/hashicorp/vault/pull/8826/files)]
-* config/seal: Fix segfault when seal block is removed [[GH-8517](https://github.com/hashicorp/vault/pull/8517)]
-* core: Fix an issue where users attempting to build Vault could receive Go module checksum errors [[GH-8770](https://github.com/hashicorp/vault/pull/8770)]
-* core: Fix blocked requests if a SIGHUP is issued during a long-running request has the state lock held. 
-  Also fixes deadlock that can happen if `vault debug` with the config target is ran during this time.
-  [[GH-8755](https://github.com/hashicorp/vault/pull/8755)]
-* core: Always rewrite the .vault-token file as part of a `vault login` to ensure permissions and ownership are set correctly [[GH-8867](https://github.com/hashicorp/vault/pull/8867)]
-* database/mongodb: Fix context deadline error that may result due to retry attempts on failed commands
-  [[GH-8863](https://github.com/hashicorp/vault/pull/8863)]
-* http: Fix superflous call messages from the http package on logs caused by missing returns after
-  `respondError` calls [[GH-8796](https://github.com/hashicorp/vault/pull/8796)]
-* namespace (enterprise): Fix namespace listing to return `key_info` when a scoping namespace is also provided. 
-* seal/gcpkms: Fix panic that could occur if all seal parameters were provided via environment
-  variables [[GH-8840](https://github.com/hashicorp/vault/pull/8840)]
-* storage/raft: Fix memory allocation and incorrect metadata tracking issues with snapshots [[GH-8793](https://github.com/hashicorp/vault/pull/8793)]
-* storage/raft: Fix panic that could occur if `disable_clustering` was set to true on Raft storage cluster [[GH-8784](https://github.com/hashicorp/vault/pull/8784)]
-* storage/raft: Handle errors returned from the API during snapshot operations [[GH-8861](https://github.com/hashicorp/vault/pull/8861)]
-* sys/wrapping: Allow unwrapping of wrapping tokens which contain nil data [[GH-8714](https://github.com/hashicorp/vault/pull/8714)]
+      * auth/okta: Fix MFA regression (introduced in [GH-8143](https://github.com/hashicorp/vault/pull/8143)) from 1.4.0 [GH-8807](https://github.com/hashicorp/vault/pull/8807)
+      * auth/userpass: Fix upgrade value for `token_bound_cidrs` being ignored due to incorrect key provided [GH-8826](https://github.com/hashicorp/vault/pull/8826/files)
+      * config/seal: Fix segfault when seal block is removed [GH-8517](https://github.com/hashicorp/vault/pull/8517)
+      * core: Fix an issue where users attempting to build Vault could receive Go module checksum errors [GH-8770](https://github.com/hashicorp/vault/pull/8770)
+      * core: Fix blocked requests if a SIGHUP is issued during a long-running request has the state lock held. 
+        Also fixes deadlock that can happen if `vault debug` with the config target is ran during this time.
+        [GH-8755](https://github.com/hashicorp/vault/pull/8755)
+      * core: Always rewrite the .vault-token file as part of a `vault login` to ensure permissions and ownership are set correctly [GH-8867](https://github.com/hashicorp/vault/pull/8867)
+      * database/mongodb: Fix context deadline error that may result due to retry attempts on failed commands
+        [GH-8863](https://github.com/hashicorp/vault/pull/8863)
+      * http: Fix superflous call messages from the http package on logs caused by missing returns after
+        `respondError` calls [GH-8796](https://github.com/hashicorp/vault/pull/8796)
+      * namespace (enterprise): Fix namespace listing to return `key_info` when a scoping namespace is also provided. 
+      * seal/gcpkms: Fix panic that could occur if all seal parameters were provided via environment
+        variables [GH-8840](https://github.com/hashicorp/vault/pull/8840)
+      * storage/raft: Fix memory allocation and incorrect metadata tracking issues with snapshots [GH-8793](https://github.com/hashicorp/vault/pull/8793)
+      * storage/raft: Fix panic that could occur if `disable_clustering` was set to true on Raft storage cluster [GH-8784](https://github.com/hashicorp/vault/pull/8784)
+      * storage/raft: Handle errors returned from the API during snapshot operations [GH-8861](https://github.com/hashicorp/vault/pull/8861)
+      * sys/wrapping: Allow unwrapping of wrapping tokens which contain nil data [GH-8714](https://github.com/hashicorp/vault/pull/8714)
 
-## Previous Releases
-For more information on previous releases, check out the changelog on [GitHub](https://github.com/hashicorp/vault/blob/v1.4.1/CHANGELOG.md).
+      ## Previous Releases
+      For more information on previous releases, check out the changelog on [GitHub](https://github.com/hashicorp/vault/blob/v1.4.1/CHANGELOG.md).
     </releaseNotes>
     <projectUrl>https://www.vaultproject.io/</projectUrl>
     <docsUrl>https://www.vaultproject.io/docs/index.html</docsUrl>
