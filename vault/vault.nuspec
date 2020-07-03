@@ -5,7 +5,7 @@
     <!-- Read this before publishing packages to chocolatey.org: https://github.com/chocolatey/chocolatey/wiki/CreatePackages -->
     <id>vault</id>
     <title>Vault</title>
-    <version>1.4.1</version>
+    <version>1.4.3</version>
     <authors>Mitchell Hashimoto, HashiCorp</authors>
     <owners>James Toyer, Tim Collins</owners>
     <summary>Vault is a tool for securely accessing secrets</summary>
@@ -25,51 +25,27 @@
       For more information, see the [introduction section](https://www.vaultproject.io/intro) of the Vault website.
     </description>
     <releaseNotes>
-      ## 1.4.1 (April 30th, 2020)
-
-      CHANGES: 
-
-      * auth/aws: The default set of metadata fields added in 1.4.1 has been changed to `account_id` and `auth_type` 
-      * storage/raft: Disallow `ha_storage` to be specified if `raft` is set as the `storage` type. 
+      ## 1.4.3
+      ### July 2nd, 2020
 
       IMPROVEMENTS:
 
-      * auth/aws: The set of metadata stored during login is now configurable 
-      * auth/aws: Improve region selection to avoid errors seen if the account hasn't enabled some newer AWS regions 
-      * auth/azure: Enable login from Azure VMs with user-assigned identities 
-      * auth/gcp: The set of metadata stored during login is now configurable 
-      * auth/gcp: The type of alias name used during login is now configurable 
-      * auth/ldap: Improve error messages during LDAP operation failures 
-      * identity: Add a batch delete API for identity entities 
-      * identity: Improve performance of logins when no group updates are needed 
-      * metrics: Add `vault.identity.num_entities` metric 
-      * secrets/kv: Allow `delete-version-after` to be reset to 0 via the CLI 
-      * secrets/rabbitmq: Improve error handling and reporting 
-      * ui: Provide One Time Password during Operation Token generation process 
+      * auth/aws: Add support for Web Identity credentials
+      * core: Add the Go version used to build a Vault binary to the server message output.
+      * secrets/database: Add static role rotation for MongoDB Atlas database plugin
+      * ui: Link to the Vault Changelog in the UI footer
 
       BUG FIXES:
 
-      * auth/okta: Fix MFA regression
-      * auth/userpass: Fix upgrade value for `token_bound_cidrs` being ignored due to incorrect key provided 
-      * config/seal: Fix segfault when seal block is removed 
-      * core: Fix an issue where users attempting to build Vault could receive Go module checksum errors 
-      * core: Fix blocked requests if a SIGHUP is issued during a long-running request has the state lock held. 
-        Also fixes deadlock that can happen if `vault debug` with the config target is ran during this time.
-        
-      * core: Always rewrite the .vault-token file as part of a `vault login` to ensure permissions and ownership are set correctly 
-      * database/mongodb: Fix context deadline error that may result due to retry attempts on failed commands
-        
-      * http: Fix superflous call messages from the http package on logs caused by missing returns after `respondError` calls 
-      * namespace (enterprise): Fix namespace listing to return `key_info` when a scoping namespace is also provided. 
-      * seal/gcpkms: Fix panic that could occur if all seal parameters were provided via environment
-        variables 
-      * storage/raft: Fix memory allocation and incorrect metadata tracking issues with snapshots 
-      * storage/raft: Fix panic that could occur if `disable_clustering` was set to true on Raft storage cluster 
-      * storage/raft: Handle errors returned from the API during snapshot operations 
-      * sys/wrapping: Allow unwrapping of wrapping tokens which contain nil data 
+      * auth/oci: Fix issue where users of the Oracle Cloud Infrastructure (OCI) auth method could not authenticate when the plugin backend was mounted at a non-default path.
+      * replication: The issue causing cubbyholes in namespaces on performance secondaries to not work, which was fixed in 1.4.0, was still an issue when the primary was both a performance primary and DR primary.
+      * seal: (enterprise) Fix issue causing stored seal and recovery keys to be mistaken as sealwrapped values
+      * secrets/aws: Fix issue where performance standbys weren't able to generate STS credentials after an IAM access key rotation in AWS and root IAM credential update in Vault 
+      * secrets/database: Fix issue that prevents performance standbys from connecting to databases after a root credential rotation
+      * secrets/gcp: Fix issue were updates were not being applied to the `token_scopes` of a roleset.
 
       ## Previous Releases
-      For more information on previous releases, check out the changelog on [GitHub](https://github.com/hashicorp/vault/blob/v1.4.1/CHANGELOG.md).
+      For more information on previous releases, check out the changelog on [GitHub](https://github.com/hashicorp/vault/blob/v1.4.3/CHANGELOG.md).
     </releaseNotes>
     <projectUrl>https://www.vaultproject.io/</projectUrl>
     <docsUrl>https://www.vaultproject.io/docs/index.html</docsUrl>
