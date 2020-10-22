@@ -5,7 +5,7 @@
     <!-- Read this before publishing packages to chocolatey.org: https://github.com/chocolatey/chocolatey/wiki/CreatePackages -->
     <id>vault</id>
     <title>Vault</title>
-    <version>1.5.2</version>
+    <version>1.5.3</version>
     <authors>Mitchell Hashimoto, HashiCorp</authors>
     <owners>James Toyer, Tim Collins</owners>
     <summary>Vault is a tool for securely accessing secrets</summary>
@@ -25,22 +25,20 @@
       For more information, see the [introduction section](https://www.vaultproject.io/intro) of the Vault website.
     </description>
     <releaseNotes>
-      ## 1.5.2
-      ### August 20th, 2020
+      ## 1.5.3
+      ### August 27th, 2020
 
       NOTE:
 
-      OSS binaries of 1.5.1, 1.4.4, 1.3.8, and 1.2.5 were built without the Vault UI. Enterprise binaries are not affected.
+      All security content from 1.5.2, 1.5.1, 1.4.5, 1.4.4, 1.3.9, 1.3.8, 1.2.6, and 1.2.5 has been made fully open source, and the git tags for 1.5.3, 1.4.6, 1.3.10, and 1.2.7 will build correctly for open source users.
 
-      KNOWN ISSUES:
+      BUG FIXES:
 
-      * AWS IAM logins may return an error depending on the headers sent with the request.
-        For more details and a workaround, see the [1.5.2 Upgrade Guide](https://www.vaultproject.io/docs/upgrading/upgrade-to-1.5.2)
-      * In versions 1.2.6, 1.3.9, 1.4.5, and 1.5.2, enterprise licenses on the HSM build were not incorporated correctly - enterprise
-        customers should use 1.2.6.1, 1.3.9.1, 1.4.5.1, and 1.5.2.1.
+      * auth/aws: Made header handling for IAM authentication more robust
+      * secrets/ssh: Fixed a bug with role option for SSH signing algorithm to allow more than RSA signing
 
       ## Previous Releases
-      For more information on previous releases, check out the changelog on [GitHub](https://github.com/hashicorp/vault/blob/v1.5.2/CHANGELOG.md).
+      For more information on previous releases, check out the changelog on [GitHub](https://github.com/hashicorp/vault/blob/v1.5.3/CHANGELOG.md).
     </releaseNotes>
     <projectUrl>https://www.vaultproject.io/</projectUrl>
     <docsUrl>https://www.vaultproject.io/docs/index.html</docsUrl>
