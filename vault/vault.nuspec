@@ -40,10 +40,10 @@
       * core (enterprise): Fix deadlock in handling EGP policies
       * core (enterprise): Fix extraneous error messages in DR Cluster
       * secrets/mysql: Conditionally overwrite TLS parameters for MySQL secrets engine [GH-9729]
-      * secrets/ad: Fix bug where `password_policy` setting was not using correct key when `ad/config` was read [GH-71]
+      * secrets/ad: Fix bug where password_policy setting was not using correct key when ad/config was read [GH-71]
 
       ## Previous Releases
-      For more information on previous releases, check out the changelog on [GitHub](https://github.com/hashicorp/vault/blob/v1.5.4/CHANGELOG.md).
+      For more information on previous releases, check out the changelog on [GitHub](https://github.com/hashicorp/vault/blob/v1.5.5/CHANGELOG.md).
     </releaseNotes>
     <projectUrl>https://www.vaultproject.io/</projectUrl>
     <docsUrl>https://www.vaultproject.io/docs/index.html</docsUrl>
