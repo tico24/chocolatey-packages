@@ -5,7 +5,7 @@
     <!-- Read this before publishing packages to chocolatey.org: https://github.com/chocolatey/chocolatey/wiki/CreatePackages -->
     <id>vault</id>
     <title>Vault</title>
-    <version>1.5.5</version>
+    <version>1.6.1</version>
     <authors>Mitchell Hashimoto, HashiCorp</authors>
     <owners>James Toyer, Tim Collins</owners>
     <summary>Vault is a tool for securely accessing secrets</summary>
@@ -25,25 +25,52 @@
       For more information, see the [introduction section](https://www.vaultproject.io/intro) of the Vault website.
     </description>
     <releaseNotes>
-      ## 1.5.5
-      ### October 21, 2020
+      ## 1.6.1
+      ### December 16, 2020
+
+      SECURITY:
+
+      * LDAP Auth Method: We addressed an issue where error messages returned by the
+        LDAP auth methold allowed user enumeration GH-10537. This vulnerability affects Vault OSS and Vault 
+        Enterprise and is fixed in 1.5.6 and 1.6.1 (CVE-2020-35177).
+      * Sentinel EGP: We've fixed incorrect handling of namespace paths to prevent
+        users within namespaces from applying Sentinel EGP policies to paths above
+        their namespace. This vulnerability affects Vault Enterprise and is fixed in
+        1.5.6 and 1.6.1 (CVE-2020-35453).
 
       IMPROVEMENTS:
 
-      * auth/aws, core/seal, secret/aws: Set default IMDS timeouts to match AWS SDK [GH-10133]
+      * auth/ldap: Improve consistency in error messages GH-10537
+      * core/metrics: Added "vault operator usage" command. GH-10365
+      * secrets/gcp: Truncate ServiceAccount display names longer than 100 characters. GH-10558
 
       BUG FIXES:
 
-      * auth/aws: Restrict region selection when in the aws-us-gov partition to avoid IAM errors [GH-9947]
-      * core (enterprise): Allow operators to add and remove (Raft) peers in a DR secondary cluster using Integrated Storage.
-      * core (enterprise): Add DR operation token to the remove peer API and CLI command (when DR secondary).
-      * core (enterprise): Fix deadlock in handling EGP policies
-      * core (enterprise): Fix extraneous error messages in DR Cluster
-      * secrets/mysql: Conditionally overwrite TLS parameters for MySQL secrets engine [GH-9729]
-      * secrets/ad: Fix bug where password_policy setting was not using correct key when ad/config was read [GH-71]
+      * agent: Only set the namespace if the VAULT_NAMESPACE env var isn't present GH-10556
+      * auth/jwt: Fixes `bound_claims` validation for provider-specific group and user info fetching. GH-10546
+      * core (enterprise): Vault EGP policies attached to path * were not correctly scoped to the namespace.
+      * core: Avoid deadlocks by ensuring that if grabLockOrStop returns stopped=true, the lock will not be held. GH-10456
+      * core: Fix client.Clone() to include the address GH-10077
+      * core: Fix rate limit resource quota migration from 1.5.x to 1.6.x by ensuring `purgeInterval` and
+      `staleAge` are set appropriately. GH-10536
+      * core: Make all APIs that report init status consistent, and make them report
+      initialized=true when a Raft join is in progress. GH-10498
+      * secrets/database/influxdb: Fix issue where not all errors from InfluxDB were being handled GH-10384
+      * secrets/database/mysql: Fixes issue where the DisplayName within generated usernames was the incorrect length GH-10433
+      * secrets/database: Sanitize `private_key` field when reading database plugin config GH-10416
+      * secrets/transit: allow for null string to be used for optional parameters in encrypt and decrypt GH-10386
+      * storage/raft (enterprise): The parameter aws_s3_server_kms_key was misnamed and didn't work.  Renamed to aws_s3_kms_key, and make it work so that when provided the given key will be used to encrypt the snapshot using AWS KMS.
+      * transform (enterprise): Fix bug tokenization handling metadata on exportable stores
+      * transform (enterprise): Fix transform configuration not handling `stores` parameter on the legacy path
+      * transform (enterprise): Make expiration timestamps human readable
+      * transform (enterprise): Return false for invalid tokens on the validate endpoint rather than returning an HTTP error
+      * transform (enterprise): Fix bug where tokenization store changes are persisted but don't take effect
+      * ui: Fix bug in Transform secret engine when a new role is added and then removed from a transformation GH-10417
+      * ui: Fix footer URL linking to the correct version changelog. GH-10491
+      * ui: Fox radio click on secrets and auth list pages. GH-10586
 
       ## Previous Releases
-      For more information on previous releases, check out the changelog on [GitHub](https://github.com/hashicorp/vault/blob/v1.5.5/CHANGELOG.md).
+      For more information on previous releases, check out the changelog on [GitHub](https://github.com/hashicorp/vault/blob/v1.6.1/CHANGELOG.md).
     </releaseNotes>
     <projectUrl>https://www.vaultproject.io/</projectUrl>
     <docsUrl>https://www.vaultproject.io/docs/index.html</docsUrl>
@@ -51,7 +78,7 @@
     <projectSourceUrl>https://github.com/hashicorp/vault</projectSourceUrl>
     <packageSourceUrl>https://github.com/tico24/chocolatey-packages</packageSourceUrl>
     <tags>vault hashicorp</tags>
-    <copyright>HashiCorp 2015-2020</copyright>
+    <copyright>HashiCorp 2015-2021</copyright>
     <licenseUrl>https://github.com/hashicorp/vault/blob/master/LICENSE</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <!-- Important note about https://cdn.rawgit.com: Files are cached permanently after the first request. Use commit URLs when updating the icon. -->
